@@ -189,3 +189,21 @@ Returns the time in seconds or null if the key does not exist or does not have a
     "result": 59
 }
 ```
+
+## PING
+Returns PONG. To be used to test of the connection/server is working.
+
+### Request:
+```json
+{
+    "command": "PING"
+}
+```
+
+### Response:
+```json
+{
+    "status": "OK",
+    "result": "PONG"
+}
+```
