@@ -45,7 +45,10 @@ class Client(object):
         }
         r = self.send(message)
         if r['status'] == 'OK':
-            return r['result']
+            if r.get('result'):
+                return r['result']
+            else:
+                return None
         else:
             raise Exception(r['message'])
 
