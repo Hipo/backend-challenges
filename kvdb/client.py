@@ -38,6 +38,17 @@ class Client(object):
         self.socket.close()
         return result
 
+    def execute(self, command, **kwargs):
+        message = {
+            'command': command,
+            'args': kwargs,
+        }
+        r = self.send(message)
+        if r['status'] == 'OK':
+            return r['result']
+        else:
+            raise Exception(r['message'])
+
     def disconnect(self):
         self.socket.close()
 
