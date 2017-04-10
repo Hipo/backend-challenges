@@ -15,12 +15,12 @@ class Client(object):
 
     def _send(self, message):
         d = json.dumps(message)
-        self.socket.sendall(d + '\n')
+        self.socket.sendall(bytes(d + '\n', 'utf-8'))
 
     def _receive(self):
         buff = ''
         while True:
-            buff += self.socket.recv(2048)
+            buff += self.socket.recv(2048).decode('utf8')
             if not buff:
                 return None
             if buff[-1] == '\n':

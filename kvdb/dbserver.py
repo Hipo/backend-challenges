@@ -27,12 +27,12 @@ class Server(object):
         message = self._receive(client)
         result = self.handle_message(message)
         d = json.dumps(result)
-        client.sendall(d + '\n')
+        client.sendall(bytes(d + '\n', 'utf8'))
 
     def _receive(self, client):
         buff = ''
         while True:
-            buff += client.recv(2048)
+            buff += client.recv(2048).decode('utf8')
             if not buff:
                 # connection has been closed
                 return None
