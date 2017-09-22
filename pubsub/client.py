@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import socket
 import time
@@ -24,7 +26,7 @@ class Client(object):
                 message = json.loads(self.buff.split('\n')[0])
                 self.buff = self.buff.split('\n', 1)[-1]
                 return message
-            self.buff += self.socket.recv(2048).decode('utf8')
+            self.buff += self.socket.recv(1).decode('utf8')
             if not self.buff:
                 return None
 
@@ -35,10 +37,10 @@ class Client(object):
 if __name__ == '__main__':
     client = Client()
     client.connect()
+    client._send({'command': 'LOL'})
     client._send({'command': 'SUBSCRIBE', 'args': {'channel': 'foo'}})
-    # client._send({'command': 'UNSUBSCRIBE', 'args': {'channel': 'foo'}})
-    # client._send({'command': 'LOL'})
     client._send({'command': 'PUBLISH', 'args': {'channel': 'foo', 'message': 'LOLLAI'}})
+    # client._send({'command': 'UNSUBSCRIBE', 'args': {'channel': 'foo'}})
     while True:
         r = client._receive()
         if r:
