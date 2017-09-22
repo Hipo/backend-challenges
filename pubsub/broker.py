@@ -27,7 +27,7 @@ class Broker(object):
         # bind the socket to a public host, and a well-known port
         self.socket.bind((self.host, self.port))
         # become a server socket
-        self.socket.listen(5)
+        self.socket.listen(100)
 
         while True:
             print('Checking...')
@@ -38,27 +38,16 @@ class Broker(object):
                     [],
                     60)
 
-            print('Ready to read %d, write %d, error %d' % (
-                len(ready_to_read),
-                len(ready_to_write),
-                len(in_error),
-            ))
             for s in ready_to_read:
                 if s == self.socket:
                     # accept connections from outside
                     (clientsocket, address) = self.socket.accept()
-                    print('Client connected: %s' % (address,))
+                    # print('Client connected: %s' % (address,))
                     clientsocket.setblocking(0)
                     # now do something with the clientsocket
                     self.client_sockets.append(clientsocket)
                 else:
                     self.handle_client(s)
-
-            # # Remove disconnected clients
-            # if len(in_error) > 0:
-            #     print('Sockets in error: %s' % in_error)
-            # self.subscriptions = list(filter(lambda s: s.client not in in_error, self.subscriptions))
-
 
     def handle_client(self, client):
         message = self._receive(client)

@@ -3,6 +3,8 @@
 import json
 import socket
 import time
+import random
+import threading
 
 
 class Client(object):
@@ -34,15 +36,27 @@ class Client(object):
         self.socket.close()
 
 
-if __name__ == '__main__':
+def run_client():
     client = Client()
     client.connect()
-    client._send({'command': 'LOL'})
-    client._send({'command': 'SUBSCRIBE', 'args': {'channel': 'foo'}})
-    client._send({'command': 'PUBLISH', 'args': {'channel': 'foo', 'message': 'LOLLAI'}})
-    # client._send({'command': 'UNSUBSCRIBE', 'args': {'channel': 'foo'}})
+    channel = str(random.randint(0, 3))
+    client._send({'command': 'SUBSCRIBE', 'args': {'channel': channel}})
     while True:
-        r = client._receive()
-        if r:
-            print(r)
-        time.sleep(0.1)
+        msg = str(random.randint(1000, 9999))
+        time.sleep(random.randint(0, 3))
+        client._send({'command': 'PUBLISH', 'args': {'channel': channel, 'message': msg}})
+        response = client._receive()
+        if response:
+            print(response)
+        time.sleep(random.randint(0, 3))
+
+
+
+if __name__ == '__main__':
+    threads = []
+    for i in range(10):
+        t = threading.Thread(target=run_client)
+        t.start()
+        threads.append(t)
+    for t in threads:
+        t.join()
