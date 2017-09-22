@@ -10,3 +10,5 @@ The broker must:
   * receive messages from publishers and send to appropriate subscribers
 
 When a client disconnects from the broker all of its subscriptions are lost. If it reconnects it must subscribe again. The client does not receive any messages that were sent on a channel before it subscribed.
+
+See [Protocol](protocol.md) for details of the command and message format.
