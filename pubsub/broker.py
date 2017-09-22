@@ -23,7 +23,7 @@ class Broker(object):
             ready_to_read, ready_to_write, in_error = \
                 select.select(
                     [self.socket] + self.client_sockets,
-                    self.client_sockets,
+                    [],
                     [],
                     60)
 
