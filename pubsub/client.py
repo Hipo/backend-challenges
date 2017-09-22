@@ -35,7 +35,10 @@ class Client(object):
 if __name__ == '__main__':
     client = Client()
     client.connect()
-    client._send({'command': 'SUBSCRIBE', 'channel': 'foo'})
+    client._send({'command': 'SUBSCRIBE', 'args': {'channel': 'foo'}})
+    # client._send({'command': 'UNSUBSCRIBE', 'args': {'channel': 'foo'}})
+    # client._send({'command': 'LOL'})
+    client._send({'command': 'PUBLISH', 'args': {'channel': 'foo', 'message': 'LOLLAI'}})
     while True:
         r = client._receive()
         if r:

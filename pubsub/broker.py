@@ -3,12 +3,20 @@ import socket
 import select
 
 
+class Subscription(object):
+
+    def __init__(self, client, channel):
+        self.client = client
+        self.channel = channel
+
+
 class Broker(object):
     def __init__(self, host='localhost', port=4243):
         self.host = host
         self.port = port
         self.socket = None
         self.client_sockets = []
+        self.subscriptions = []
 
     def run(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,11 +48,53 @@ class Broker(object):
 
     def handle_client(self, client):
         message = self._receive(client)
+        if message:
+            cmd = message['command'].lower()
+            arguments = message.get('args', {})
+            fn = getattr(self, 'resolve_' + cmd, None)
+            if not fn:
+                self._send(client, 'Unrecognized command %s' % cmd)
+            else:
+                fn(client, **arguments)
+
+    def resolve_subscribe(self, client, channel=None):
+        self.subscribe(client, channel)
+
+    def resolve_unsubscribe(self, client, channel=None):
+        self.unsubscribe(client, channel)
+
+    def resolve_publish(self, client, channel, message):
+        channel_subs = filter(lambda s: s.channel == channel, self.subscriptions)
+        for subscription in channel_subs:
+            self._send(subscription.client, message)
+        print('Client %s published %s to %s' % (client, message, channel))
+
+    def subscribe(self, client, channel):
+        if not self.is_subscribed(client, channel):
+            print('Client %s subscribed to %s' % (client, channel))
+            self.subscriptions.append(Subscription(client, channel))
+        else:
+            print('Client %s already subscribed to %s' % (client, channel))
+
+    def unsubscribe(self, client, channel=None):
+        if not channel:
+            self.subscriptions = list(filter(lambda s:
+                s.client == client,
+                self.subscriptions))
+        else:
+            self.subscriptions = list(filter(lambda s:
+                s.client == client and s.channel == channel,
+                self.subscriptions))
+
+    def is_subscribed(self, client, channel):
+        existing_subs = list(filter(lambda s:
+            s.client == client and s.channel == channel, self.subscriptions))
+        return len(existing_subs) > 0
 
     def _receive(self, client):
         buff = ''
         while True:
-            buff += client.recv(2048).decode('utf8')
+            buff += client.recv(1).decode('utf8')
             if not buff:
                 # connection has been closed
                 return None
@@ -52,7 +102,6 @@ class Broker(object):
             if buff[-1] == '\n':
                 break
         buff = buff[:-1]
-        print(buff)
         message = json.loads(buff)
         return message
 
