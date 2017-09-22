@@ -37,6 +37,8 @@ A Postgresql/Mysql 'clone'.
 
 Like Redis PubSub / RabbitMQ PubSub
 
+[PubSub Challenge Details](pubsub/)
+
 
 # Challenge 5 - Build a Task Queue from scratch
 
