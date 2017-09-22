@@ -61,7 +61,6 @@ if __name__ == '__main__':
     client = Client()
     client.connect()
     client.subscribe("foo")
-    time.sleep(1)
     client.publish("foo", "bar")
     while True:
         r = client._receive()

@@ -74,7 +74,7 @@ class Broker(object):
     def _receive(self, client):
         buff = ''
         while True:
-            buff += client.recv(2048).decode('utf8')
+            buff += client.recv(1).decode('utf8')
             if not buff:
                 # connection has been closed
                 return None
