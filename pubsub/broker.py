@@ -30,6 +30,7 @@ class Broker(object):
         self.socket.listen(5)
 
         while True:
+            print('Checking...')
             ready_to_read, ready_to_write, in_error = \
                 select.select(
                     [self.socket] + self.client_sockets,
@@ -37,6 +38,11 @@ class Broker(object):
                     [],
                     60)
 
+            print('Ready to read %d, write %d, error %d' % (
+                len(ready_to_read),
+                len(ready_to_write),
+                len(in_error),
+            ))
             for s in ready_to_read:
                 if s == self.socket:
                     # accept connections from outside
@@ -56,7 +62,10 @@ class Broker(object):
 
     def handle_client(self, client):
         message = self._receive(client)
-        if message:
+        if not message:
+            # Assume client disconnected
+            self.unsubscribe(client)
+        else:
             cmd = message['command'].lower()
             arguments = message.get('args', {})
             fn = getattr(self, 'resolve_' + cmd, None)
@@ -103,6 +112,8 @@ class Broker(object):
             self.subscriptions = list(filter(lambda s:
                 s.client != client,
                 self.subscriptions))
+            # Remove disconnected sockets to avoid select issues
+            self.client_sockets = list(filter(lambda cs: cs != client, self.client_sockets))
         else:
             self.subscriptions = list(filter(lambda s:
                 s.client != client or s.channel != channel,
@@ -128,7 +139,6 @@ class Broker(object):
                 if buff[-1] == '\n':
                     break
             except Exception:
-                self.unsubscribe(client)
                 return None
         buff = buff[:-1]
         message = json.loads(buff)
