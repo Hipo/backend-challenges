@@ -8,6 +8,7 @@ class Broker(object):
         self.host = host
         self.port = port
         self.socket = None
+        self.db = {}
         self.client_sockets = []
 
     def run(self):
@@ -40,6 +41,35 @@ class Broker(object):
 
     def handle_client(self, client):
         message = self._receive(client)
+        subscribers_key = "subscribers_of_%s" % message["args"]["channel"]
+        self.db.setdefault(subscribers_key, [])
+        if message["command"] == "SUBSCRIBE":
+            if client not in self.db[subscribers_key]:
+                self.db[subscribers_key].append(client)
+
+            broker._send(client, {
+                "type": "SUBSCRIBE",
+                "channel": message["args"]["channel"],
+                "count": len(self.db[subscribers_key])
+            })
+        elif message["command"] == "UNSUBSCRIBE":
+            if client in self.db[subscribers_key]:
+                self.db[subscribers_key].remove(client)
+
+            broker._send(client, {
+                "type": "UNSUBSCRIBE",
+                "channel": message["args"]["channel"],
+                "count": len(self.db[subscribers_key])
+            })
+        elif message["command"] == "PUBLISH":
+            for client in self.db[subscribers_key]:
+                broker._send(client, {
+                    "type": "MESSAGE",
+                    "channel": message["args"]["channel"],
+                    "message": message["args"]["message"],
+                })
+        else:
+            assert False
 
     def _receive(self, client):
         buff = ''
@@ -52,7 +82,6 @@ class Broker(object):
             if buff[-1] == '\n':
                 break
         buff = buff[:-1]
-        print(buff)
         message = json.loads(buff)
         return message
 

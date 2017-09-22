@@ -28,6 +28,31 @@ class Client(object):
             if not self.buff:
                 return None
 
+    def subscribe(self, channel):
+        return self._send({
+            "command": "SUBSCRIBE",
+            "args": {
+                "channel": channel
+            }
+        })
+
+    def unsubscribe(self, channel):
+        return self._send({
+            "command": "UNSUBSCRIBE",
+            "args": {
+                "channel": channel
+            }
+        })
+
+    def publish(self, channel, message):
+        return self._send({
+            "command": "PUBLISH",
+            "args": {
+                "channel": channel,
+                "message": message
+            }
+        })
+
     def disconnect(self):
         self.socket.close()
 
@@ -35,7 +60,9 @@ class Client(object):
 if __name__ == '__main__':
     client = Client()
     client.connect()
-    client._send({'command': 'SUBSCRIBE', 'channel': 'foo'})
+    client.subscribe("foo")
+    time.sleep(1)
+    client.publish("foo", "bar")
     while True:
         r = client._receive()
         if r:
