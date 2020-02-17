@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+
+  postgres:
+    image: mdillon/postgis:11
+    environment:
+      - POSTGRES_DB=task_queue
+      - POSTGRES_USER=task_queue_dbu
+      - POSTGRES_PASSWORD=7NVhgp2izNliDnl
+    ports:
+      - "4321:4321"
+    volumes:
+      - ".data/db:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --quiet || exit 1"]
+      interval: 1m
+      timeout: 30s
+      retries: 10
+      start_period: 40s
+
+    container_name: task_queue_postgres
+    restart: unless-stopped
+
+  task_queue:
+    image: task_queue
+    build:
+      context: .
+      target: application
+    volumes:
+      - ".:/task_queue"
+      - ".data/root:/root"
+    restart: unless-stopped
+    tty: true
+    depends_on:
+      - postgres
+    ports:
+        - "80:8080"
