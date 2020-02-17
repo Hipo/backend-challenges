@@ -91,3 +91,7 @@ ENV/
 .idea
 
 *.db
+
+# task_queue
+task_queue-backend/db.sqlite3
+task_queue-backend/.data
