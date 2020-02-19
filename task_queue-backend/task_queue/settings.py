@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'task_queue.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'task_queue',
+        'USER': 'task_queue_dbu',
+        'PASSWORD': '7NVhgp2izNliDnl',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
 
