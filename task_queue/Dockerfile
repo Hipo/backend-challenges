@@ -10,7 +10,7 @@ RUN apt-get update && \
 COPY . .
 RUN pip install -U pip && pip install -r requirements.txt
 
-WORKDIR /task_queue
+WORKDIR /demo
 
 FROM base as application
 COPY . .

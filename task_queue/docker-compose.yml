@@ -5,8 +5,8 @@ services:
   postgres:
     image: mdillon/postgis:11
     environment:
-      - POSTGRES_DB=task_queue
-      - POSTGRES_USER=task_queue_dbu
+      - POSTGRES_DB=demo
+      - POSTGRES_USER=demo_dbu
       - POSTGRES_PASSWORD=7NVhgp2izNliDnl
     ports:
       - "4321:4321"
@@ -19,16 +19,16 @@ services:
       retries: 10
       start_period: 40s
 
-    container_name: task_queue_postgres
+    container_name: demo_postgres
     restart: unless-stopped
 
-  task_queue:
-    image: task_queue
+  demo:
+    image: demo
     build:
       context: .
       target: application
     volumes:
-      - ".:/task_queue"
+      - ".:/demo"
       - ".data/root:/root"
     restart: unless-stopped
     tty: true
