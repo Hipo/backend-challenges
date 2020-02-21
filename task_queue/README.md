@@ -45,3 +45,4 @@ while not limiting access to the required Postgresql features.
 ## Setup guide
 
 You can run `source tools/run_development.sh`
+You can run `python manage.py runserver 0:8080` and it will be binded to http://localhost
