@@ -43,6 +43,7 @@ Like Redis PubSub / RabbitMQ PubSub
 # Challenge 5 - Build a Task Queue from scratch
 
 Like Celery/Kuyruk/Resque/Fifo
+[Task Queue Challenge Details](task_queue/)
 
 
 # Challenge 6 - Build a Micro Web Framework from scratch
