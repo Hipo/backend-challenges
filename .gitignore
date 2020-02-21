@@ -91,3 +91,7 @@ ENV/
 .idea
 
 *.db
+
+# demo
+task_queue/db.sqlite3
+task_queue/.data

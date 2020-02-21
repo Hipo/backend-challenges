@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+
+  postgres:
+    image: mdillon/postgis:11
+    environment:
+      - POSTGRES_DB=demo
+      - POSTGRES_USER=demo_dbu
+      - POSTGRES_PASSWORD=7NVhgp2izNliDnl
+    ports:
+      - "4321:4321"
+    volumes:
+      - ".data/db:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --quiet || exit 1"]
+      interval: 1m
+      timeout: 30s
+      retries: 10
+      start_period: 40s
+
+    container_name: demo_postgres
+    restart: unless-stopped
+
+  demo:
+    image: demo
+    build:
+      context: .
+      target: application
+    volumes:
+      - ".:/demo"
+      - ".data/root:/root"
+    restart: unless-stopped
+    tty: true
+    depends_on:
+      - postgres
+    ports:
+        - "80:8080"
