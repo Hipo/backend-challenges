@@ -41,3 +41,7 @@ while not limiting access to the required Postgresql features.
 * What are the disadvantages of using Postgresql for a task Queue?
 * When would it be useful & appropriate to use this type of system?
 * When would it not be appropriate to use this type of system?
+
+## Setup guide
+
+You can run `source tools/run_development.sh`
