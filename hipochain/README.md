@@ -8,9 +8,9 @@
 * No consensus.
 * No peer to peer gossip.
 * No authentication.
-* There exists a single node which is a Redis client at the local network.
-* Node (Redis client) is accessable by everyone under the local network.
-* Transactions are stored in a Redis List with is accessed by the key `hiponet`.
+* There exists a Redis client which is used for broadcasting the transactions.
+* Redis client is accessable by everyone under the local network.
+* Transactions are stored in a Redis List which is accessed by the key `hiponet`.
 * New transactions are appended to the end of the Redis list.
 * Some of the submitted transactions might be invalid.
 * There is only one asset whose `id` is 0.
