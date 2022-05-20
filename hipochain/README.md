@@ -17,6 +17,8 @@
 * Every account, **except** HIPO, has 0 asset balance at the start.
 * HIPO creates the genesis transaction, which distributes the assets.
 * HIPO is trustable. No need to perform validations for their transactions.
+* Hipochain Node is responsible for verifying the validity of transactions.
+* Each computer that adheres to the below protocol is a Hipochain Node.
 
 ## Protocol
 * Transaction must be a JSON Array of objects.
