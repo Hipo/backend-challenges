@@ -51,5 +51,12 @@ Like Celery/Kuyruk/Resque/Fifo
 Like Flask/Pico/Bottle/WebPy
 
 
+# Challenge 7 - Hipochain
+
+Send & parse transactions and implement ledgering.
+
+[Hipochain Challenge Details](hipochain/)
+
+
 # Challenge N+1 - Make a suggestion!
 
